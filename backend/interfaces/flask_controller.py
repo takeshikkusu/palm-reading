@@ -5,7 +5,7 @@ HTTPの入出力のみを担当。Use caseを呼び出し、結果をJSONで返�
 import base64
 import re
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 
 from backend.usecases.diagnose_palm import DiagnosePalmUseCase
 
@@ -82,8 +82,11 @@ def create_diagnosis_blueprint(diagnose_use_case: DiagnosePalmUseCase) -> Bluepr
             return jsonify(result.to_dict()), 200
 
         except ValueError as e:
+            current_app.logger.warning("Bad request in /api/diagnose: %s", e)
             return jsonify({"error": str(e)}), 400
         except Exception as e:
+            # 詳細をサーバーログに出しておく（Render の Events で確認可能）
+            current_app.logger.exception("Unexpected error in /api/diagnose")
             return jsonify({"error": "診断中にエラーが発生しました"}), 500
 
     return bp

@@ -14,7 +14,8 @@ from backend.usecases.diagnose_palm import DiagnosePalmUseCase
 def create_app() -> Flask:
     app = Flask(__name__)
 
-    CORS(app, origins=CORS_ORIGINS_LIST, supports_credentials=True)
+    #CORS(app, origins=CORS_ORIGINS_LIST, supports_credentials=True)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     if not GEMINI_API_KEY:
         app.logger.warning("GEMINI_API_KEY が未設定です。/.env または環境変数を設定してください。")

@@ -25,9 +25,22 @@ SYSTEM_PROMPT = """あなたは手相の専門家です。手のひらの画像�
 class GeminiLLMAdapter(LLMPort):
     """Google Gemini APIを用いたLLMPortの実装。"""
 
-    def __init__(self, api_key: str, model: str = "gemini-2.0-flash-exp") -> None:
+    def __init__(self, api_key: str, model: str = "models/gemini-1.5-flash") -> None:
         self._api_key = api_key
-        self._model = model
+        self._model = self._normalize_model_name(model)
+
+    @staticmethod
+    def _normalize_model_name(model: str) -> str:
+        """
+        google-generativeai は 'models/...' の形式が基本。
+        例: 'gemini-1.5-flash' -> 'models/gemini-1.5-flash'
+        """
+        m = (model or "").strip()
+        if not m:
+            return "models/gemini-1.5-flash"
+        if m.startswith("models/"):
+            return m
+        return f"models/{m}"
 
     def generate_palm_reading(self, image_base64: str, mime_type: str, prompt: Optional[str] = None) -> str:
         import google.generativeai as genai

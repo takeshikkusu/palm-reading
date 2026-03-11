@@ -11,7 +11,8 @@ def get_env(key: str, default: str = "") -> str:
 
 # Gemini
 GEMINI_API_KEY = get_env("GEMINI_API_KEY")
-GEMINI_MODEL = get_env("GEMINI_MODEL", "gemini-2.0-flash-exp")
+# google-generativeai SDK では "models/..." 形式が安定
+GEMINI_MODEL = get_env("GEMINI_MODEL", "models/gemini-1.5-flash")
 
 # Flask
 FLASK_ENV = get_env("FLASK_ENV", "development")

@@ -15,7 +15,16 @@ def create_app() -> Flask:
     app = Flask(__name__)
 
     #CORS(app, origins=CORS_ORIGINS_LIST, supports_credentials=True)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "https://palm-ai-frontend.onrender.com",
+            "http://localhost:5173" # ローカル開発用
+        ],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
     if not GEMINI_API_KEY:
         app.logger.warning("GEMINI_API_KEY が未設定です。/.env または環境変数を設定してください。")

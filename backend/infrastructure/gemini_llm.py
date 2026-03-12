@@ -32,15 +32,17 @@ class GeminiLLMAdapter(LLMPort):
     @staticmethod
     def _normalize_model_name(model: str) -> str:
         """
-        google-generativeai は 'models/...' の形式が基本。
-        例: 'gemini-1.5-flash' -> 'models/gemini-1.5-flash'
+        SDKに渡すモデル名を ID のみに統一する
+        例: 'models/gemini-1.5-flash' -> 'gemini-1.5-flash'
         """
         m = (model or "").strip()
         if not m:
-            return "models/gemini-1.5-flash"
+            return "gemini-1.5-flash"
+        
+        # models/ が付いていたら除去して ID だけにする
         if m.startswith("models/"):
-            return m
-        return f"models/{m}"
+            return m.replace("models/", "")
+        return m
 
     def generate_palm_reading(self, image_base64: str, mime_type: str, prompt: Optional[str] = None) -> str:
         import google.generativeai as genai
